@@ -1,0 +1,11 @@
+vendedor_id,vendedor_nome,vendedor_telefone,cliente_id,cliente_nome,cliente_telefone,cliente_email,produto_id,produto_nome,produto_preco,produto_sku
+2,Ana Ritchie,863-369-6954,3,Teresa O'Reilly,(614) 446-6587,Godfrey.Ward25@yahoo.com,12,Recycled Plastic Pizza,165.00,077
+2,Ana Ritchie,863-369-6954,3,Teresa O'Reilly,(614) 446-6587,Godfrey.Ward25@yahoo.com,13,Licensed Wooden Pants,99.00,248
+2,Ana Ritchie,863-369-6954,3,Teresa O'Reilly,(614) 446-6587,Godfrey.Ward25@yahoo.com,14,Recycled Steel Chips,845.00,97786
+2,Ana Ritchie,863-369-6954,3,Teresa O'Reilly,(614) 446-6587,Godfrey.Ward25@yahoo.com,15,Bespoke Frozen Shirt,625.00,96406
+2,Ana Ritchie,863-369-6954,3,Teresa O'Reilly,(614) 446-6587,Godfrey.Ward25@yahoo.com,16,Recycled Wooden Soap,492.00,607
+2,Ana Ritchie,863-369-6954,4,Heather Jenkins,394-935-3342,William_McLaughlin4@yahoo.com,17,Elegant Metal Soap,396.00,4872
+2,Ana Ritchie,863-369-6954,4,Heather Jenkins,394-935-3342,William_McLaughlin4@yahoo.com,18,Sleek Wooden Bacon,510.00,4518
+2,Ana Ritchie,863-369-6954,4,Heather Jenkins,394-935-3342,William_McLaughlin4@yahoo.com,19,Fantastic Metal Keyboard,258.00,869
+2,Ana Ritchie,863-369-6954,4,Heather Jenkins,394-935-3342,William_McLaughlin4@yahoo.com,20,Rustic Metal Fish,561.00,4797
+2,Ana Ritchie,863-369-6954,4,Heather Jenkins,394-935-3342,William_McLaughlin4@yahoo.com,21,Awesome Fresh Tuna,275.00,782

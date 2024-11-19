@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "desafio-consolidado-vendas"
+version = "0.1.0"
+description = "Gerar relatórios consolidados (arquivo CSV) por vendendor"
+authors = ["Eduardo Gomes <edu_merckx@yahoo.com.br>"]
+readme = "README.md"
+packages = [{include = "desafio_consolidado_vendas"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic-settings = "^2.6.1"
+pydantic = "^2.9.2"
+httpx = "^0.27.2"
+requests = "^2.32.3"
+pika = "^1.3.2"
+pandas = "^2.2.3"
+aiolimiter = "^1.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.7.4"
+taskipy = "^1.14.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[tool.taskipy.tasks]
+publisher = 'python src/publisher.py'
+consumer = 'python src/consumer.py'
+lint = 'ruff check .; ruff check . --diff'
+format = 'ruff check . --fix; ruff format .'
