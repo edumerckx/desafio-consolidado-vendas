@@ -16,7 +16,9 @@ As configurações ficam em variáveis de ambiente e devem ser informadas no arq
 
 ## Uso
 
-Aqui temos duas unidades. 
+Aqui temos duas unidades.
+![img](visao-geral.png)
+
 - *Publisher* que é responsável por consumir a API de vendendores e publicar no rabbitmq. Depois de todo o envio, o serviço é finalizado
 - *Consumer* que é responsável por consumir as mensagens enviadas pelo publisher, e para cada vendedor gerar um `CSV` com dados consolidados de vendas obtidos nas APIs de vendas, clientes e produtos. Uma vez iniciado, fica aguardando por novas mensagens.
 
@@ -31,4 +33,5 @@ task consumer
 ```
 Caso necessite, pode iniciar mais `consumers` executando o comando acima em outros terminais.
 
+Executando o `docker-compose.yml` um container rabbitmq é iniciado.  
 
