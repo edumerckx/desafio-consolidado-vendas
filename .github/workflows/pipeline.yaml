@@ -1,0 +1,35 @@
+name: Pipeline
+
+on: [push]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        env: 
+            SELLERS_ENDPOINT: ${{secrets.SELLERS_ENDPOINT}}
+            CLIENTS_ENDPOINT: ${{secrets.CLIENTS_ENDPOINT}}
+            PRODUCTS_ENDPOINT: ${{secrets.PRODUCTS_ENDPOINT}}
+            SALES_ENDPOINT: ${{secrets.SALES_ENDPOINT}}
+            AMQP_URL: ${{secrets.AMQP_URL}}
+            EXCHANGE_SELLERS: ${{secrets.EXCHANGE_SELLERS}}
+            QUEUE_SELLERS: ${{secrets.QUEUE_SELLERS}}
+            DELAY_IN_SECONDS: ${{secrets.DELAY_IN_SECONDS}}
+        steps:
+            - name: copia arquivos
+              uses: actions/checkout@v3
+
+            - name: instalar python
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.12'
+            
+            - name: instalar poetry
+              run: pip install poetry
+
+            - name: instalar dependências
+              run: poetry install
+
+            - name: executar testes
+              run: poetry run task test
+
+
