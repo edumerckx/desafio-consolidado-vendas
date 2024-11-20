@@ -37,3 +37,7 @@ Caso necessite, pode iniciar mais `consumers` executando o comando acima em outr
 
 Executando o `docker-compose.yml` um container rabbitmq é iniciado.  
 
+### Observações
+
+- A variável de ambiente `DELAY_IN_SECONDS` está sendo utilizada para retardar novas requisições quando as APIs não estão ok (por exemplo retornando 429, 500, 503...). Como podem ser executados _n_ **consumers**, uma solução de requests/segundo não foi efetiva.
+- Adicionar mais cenários de teste. 
