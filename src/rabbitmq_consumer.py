@@ -1,6 +1,7 @@
 import os
 
 import pika
+import pika.exceptions
 
 
 class RabbitMQConsumer:
@@ -12,22 +13,26 @@ class RabbitMQConsumer:
         self._channel = self._create_channel()
 
     def _create_channel(self):
-        conn = pika.BlockingConnection(pika.URLParameters(self._str_conn))
-        channel = conn.channel()
+        try:
+            conn = pika.BlockingConnection(pika.URLParameters(self._str_conn))
+            channel = conn.channel()
 
-        channel.queue_declare(
-            queue=self._queue,
-            durable=True,
-        )
+            channel.queue_declare(
+                queue=self._queue,
+                durable=True,
+            )
 
-        channel.basic_qos(prefetch_count=self._prefetch_count)
+            channel.basic_qos(prefetch_count=self._prefetch_count)
 
-        channel.basic_consume(
-            queue=self._queue,
-            on_message_callback=self._callback,
-        )
+            channel.basic_consume(
+                queue=self._queue,
+                on_message_callback=self._callback,
+            )
 
-        return channel
+            return channel
+        except pika.exceptions.AMQPConnectionError:
+            print('# Error on connect rabbitmq')
+            os._exit(0)
 
     def start(self):
         try:

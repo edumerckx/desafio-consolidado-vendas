@@ -17,6 +17,8 @@ As configurações ficam em variáveis de ambiente e devem ser informadas no arq
 ## Uso
 
 Aqui temos duas unidades.
+
+
 ![img](visao-geral.png)
 
 - *Publisher* que é responsável por consumir a API de vendendores e publicar no rabbitmq. Depois de todo o envio, o serviço é finalizado

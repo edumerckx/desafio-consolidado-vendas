@@ -1,18 +1,19 @@
 import json
 
-import requests
+import httpx
 
-from rabbitmq_publisher import RabbitMQPublisher
-from settings import Settings
+from src.rabbitmq_publisher import RabbitMQPublisher
+from src.settings import Settings
 
 settings = Settings()
 
 
 def get_seller_data():
     try:
-        resp = requests.get(Settings().SELLERS_ENDPOINT)
+        resp = httpx.get(str(Settings().SELLERS_ENDPOINT))
         return resp.json()
-    except requests.exceptions.JSONDecodeError:
+    except Exception as e:
+        print(f'# Error: {e}')
         return []
 
 

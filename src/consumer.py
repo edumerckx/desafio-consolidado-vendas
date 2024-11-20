@@ -6,41 +6,56 @@ import time
 import pandas as pd
 from httpx import AsyncClient
 
-from rabbitmq_consumer import RabbitMQConsumer
-from settings import Settings
+from src.rabbitmq_consumer import RabbitMQConsumer
+from src.settings import Settings
 
 settings = Settings()
 
 os.makedirs('consolidado', exist_ok=True)
 
 
+async def get_sales_data(seller_id: int, client: AsyncClient) -> pd.DataFrame:
+    resp = await client.get(
+            f'{settings.SALES_ENDPOINT}?vendedor_id={seller_id}'
+    )
+    df_sales = pd.DataFrame(resp.json())
+    return df_sales
+
+
+async def get_clients_data(list_client_ids: list, client: AsyncClient) -> pd.DataFrame:
+    clients = []
+    for client_id in list_client_ids:
+        resp = await client.get(
+            f'{settings.CLIENTS_ENDPOINT}?id={client_id}'
+        )
+        clients.append(resp.json()[0])
+    df_clients = pd.DataFrame(clients)
+    df_clients.rename(lambda x: f'cliente_{x}', axis=1, inplace=True)
+    return df_clients
+
+
+async def get_products_data(list_product_ids: list, client: AsyncClient) -> pd.DataFrame:
+    products = []
+    for product_id in list_product_ids:
+        resp = await client.get(
+            f'{settings.PRODUCTS_ENDPOINT}?id={product_id}'
+        )
+        products.append(resp.json()[0])
+    df_products = pd.DataFrame(products)
+    df_products.rename(lambda x: f'produto_{x}', axis=1, inplace=True)
+    return df_products
+
+
 async def process_seller(seller):
     async with AsyncClient() as client:
-        resp = await client.get(
-            f'{settings.SALES_ENDPOINT}?vendedor_id={seller["id"]}'
-        )
-        df_sales = pd.DataFrame(resp.json())
+        df_sales = await get_sales_data(seller['id'], client)
 
         list_client_ids = set(df_sales['cliente_id'])
         list_product_ids = set(df_sales['produto_id'])
 
-        clients = []
-        for client_id in list_client_ids:
-            resp = await client.get(
-                f'{settings.CLIENTS_ENDPOINT}?id={client_id}'
-            )
-            clients.append(resp.json()[0])
-        df_clients = pd.DataFrame(clients)
-        df_clients.rename(lambda x: f'cliente_{x}', axis=1, inplace=True)
+        df_clients = await get_clients_data(list_client_ids, client)
 
-        products = []
-        for product_id in list_product_ids:
-            resp = await client.get(
-                f'{settings.PRODUCTS_ENDPOINT}?id={product_id}'
-            )
-            products.append(resp.json()[0])
-        df_products = pd.DataFrame(products)
-        df_products.rename(lambda x: f'produto_{x}', axis=1, inplace=True)
+        df_products = await get_products_data(list_product_ids, client)
 
         df = pd.merge(df_sales, df_clients, how='inner', on='cliente_id')
         df['vendedor_nome'] = seller['nome']
