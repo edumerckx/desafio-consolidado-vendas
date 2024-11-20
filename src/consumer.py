@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import time
 
 import pandas as pd
 from httpx import AsyncClient
@@ -11,8 +12,6 @@ from settings import Settings
 settings = Settings()
 
 os.makedirs('consolidado', exist_ok=True)
-
-DELAY_IN_SECONDS = 0.2
 
 
 async def process_seller(seller):
@@ -31,7 +30,6 @@ async def process_seller(seller):
                 f'{settings.CLIENTS_ENDPOINT}?id={client_id}'
             )
             clients.append(resp.json()[0])
-            await asyncio.sleep(DELAY_IN_SECONDS)
         df_clients = pd.DataFrame(clients)
         df_clients.rename(lambda x: f'cliente_{x}', axis=1, inplace=True)
 
@@ -41,7 +39,6 @@ async def process_seller(seller):
                 f'{settings.PRODUCTS_ENDPOINT}?id={product_id}'
             )
             products.append(resp.json()[0])
-            await asyncio.sleep(DELAY_IN_SECONDS)
         df_products = pd.DataFrame(products)
         df_products.rename(lambda x: f'produto_{x}', axis=1, inplace=True)
 
@@ -74,12 +71,17 @@ async def process_seller(seller):
 
 def on_message(channel, method, properties, body):
     seller = json.loads(body)
-    print(f'# seller {seller}')
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(process_seller(seller))
+    try:
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(process_seller(seller))
 
-    channel.basic_ack(delivery_tag=method.delivery_tag)
+        print(f'# Seller {seller['nome']} processed')
+        channel.basic_ack(delivery_tag=method.delivery_tag)
+    except Exception:
+        print(f'# Error - Seller {seller['nome']} not processed - requeue - waiting for {settings.DELAY_IN_SECONDS} second(s)')  # noqa: E501
+        channel.basic_reject(delivery_tag=method.delivery_tag, requeue=True)
+        time.sleep(settings.DELAY_IN_SECONDS)
 
 
 if __name__ == '__main__':

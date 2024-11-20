@@ -9,22 +9,26 @@ settings = Settings()
 
 
 def get_seller_data():
-    resp = requests.get(Settings().SELLERS_ENDPOINT)
-    return resp.json()
+    try:
+        resp = requests.get(Settings().SELLERS_ENDPOINT)
+        return resp.json()
+    except requests.exceptions.JSONDecodeError:
+        return []
 
 
 def process_sellers(sellers):
-    publisher = RabbitMQPublisher(
-        str_conn=settings.AMQP_URL,
-        exchange=settings.EXCHANGE_SELLERS,
-        queue=settings.QUEUE_SELLERS,
-    )
-    for seller in sellers:
-        print(f'# seller {seller['nome']}')
-        publisher.publish(json.dumps(seller))
+    print(f'# {len(sellers)} sellers will be processed')
+    if len(sellers) > 0:
+        publisher = RabbitMQPublisher(
+            str_conn=settings.AMQP_URL,
+            exchange=settings.EXCHANGE_SELLERS,
+            queue=settings.QUEUE_SELLERS,
+        )
+
+        for seller in sellers:
+            publisher.publish(json.dumps(seller))
 
 
 if __name__ == '__main__':
-    # print(type(Settings().CLIENTS_ENDPOINT))
     sellers_data = get_seller_data()
     process_sellers(sellers_data)

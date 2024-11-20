@@ -15,3 +15,4 @@ class Settings(BaseSettings):
     EXCHANGE_SELLERS: str
     QUEUE_SELLERS: str
     PREFETCH_COUNT: int | None = None
+    DELAY_IN_SECONDS: float = 2.0
